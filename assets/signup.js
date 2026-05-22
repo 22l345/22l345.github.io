@@ -30,6 +30,11 @@ function validatePassword(password) {
   return null;
 }
 
+function markFieldValidity(field, isValid) {
+  if (!field || typeof field.setAttribute !== "function") return;
+  field.setAttribute("aria-invalid", isValid ? "false" : "true");
+}
+
 function validateForm(form) {
   const firstName = form.elements.firstName.value.trim();
   const lastName = form.elements.lastName.value.trim();
@@ -38,16 +43,33 @@ function validateForm(form) {
   const confirmPassword = form.elements.confirmPassword.value;
   const termsAccepted = form.elements.terms.checked;
 
-  if (!firstName || !lastName) return "Please enter your first and last name.";
-  if (!email) return "Please enter your email.";
-  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return "Please enter a valid email address.";
+  markFieldValidity(form.elements.firstName, Boolean(firstName));
+  markFieldValidity(form.elements.lastName, Boolean(lastName));
+  markFieldValidity(form.elements.email, Boolean(email));
+  markFieldValidity(form.elements.password, true);
+  markFieldValidity(form.elements.confirmPassword, true);
+
+  if (!firstName || !lastName) return { message: "Please enter your first and last name.", focus: "firstName" };
+  if (!email) return { message: "Please enter your email.", focus: "email" };
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+    markFieldValidity(form.elements.email, false);
+    return { message: "Please enter a valid email address.", focus: "email" };
+  }
 
   const passwordError = validatePassword(password);
-  if (passwordError) return passwordError;
-  if (password !== confirmPassword) return "Passwords do not match.";
-  if (!termsAccepted) return "Please accept the Terms and Privacy Policy.";
+  if (passwordError) {
+    markFieldValidity(form.elements.password, false);
+    return { message: passwordError, focus: "password" };
+  }
 
-  return null;
+  if (password !== confirmPassword) {
+    markFieldValidity(form.elements.confirmPassword, false);
+    return { message: "Passwords do not match.", focus: "confirmPassword" };
+  }
+
+  if (!termsAccepted) return { message: "Please accept the Terms and Privacy Policy.", focus: "terms" };
+
+  return { message: null, focus: null };
 }
 
 function attachSignupForm() {
@@ -60,9 +82,12 @@ function attachSignupForm() {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const error = validateForm(form);
+    const { message: error, focus } = validateForm(form);
     if (error) {
       showMessage({ errorEl, successEl, error });
+      if (focus && typeof form.elements[focus]?.focus === "function") {
+        form.elements[focus].focus();
+      }
       return;
     }
 
@@ -95,4 +120,3 @@ if (document.readyState === "loading") {
 } else {
   attachSignupForm();
 }
-
