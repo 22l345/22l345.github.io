@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign up • LifeOS</title>
+    <meta name="description" content="Create a LifeOS account (demo signup UI)." />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <h1 class="title">Create your account</h1>
+        <p class="subtitle">
+          This is a static demo signup UI (no backend). It validates inputs locally and does not create
+          a real account.
+        </p>
+
+        <form id="signup-form" novalidate>
+          <div class="row two">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" name="firstName" type="text" autocomplete="given-name" required />
+            </div>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" name="lastName" type="text" autocomplete="family-name" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="row two">
+            <div class="field">
+              <label for="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                required
+                minlength="8"
+              />
+              <p class="hint">At least 8 characters, with a number and a letter.</p>
+            </div>
+            <div class="field">
+              <label for="confirmPassword">Confirm password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autocomplete="new-password"
+                required
+                minlength="8"
+              />
+            </div>
+          </div>
+
+          <div class="checkbox">
+            <input id="terms" name="terms" type="checkbox" required />
+            <label for="terms">
+              I agree to the <a class="link" href="#" aria-disabled="true">Terms</a> and
+              <a class="link" href="#" aria-disabled="true">Privacy Policy</a>.
+            </label>
+          </div>
+
+          <button class="button primary" type="submit">Create account</button>
+
+          <div id="form-error" class="error" role="alert" aria-live="polite"></div>
+          <div id="form-success" class="success" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="footer">
+          <a class="link" href="/">Back to home</a>
+          <span>Already have an account? <a class="link" href="#" aria-disabled="true">Log in</a></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="/assets/signup.js" defer></script>
+  </body>
+</html>
+
